@@ -34,7 +34,7 @@ df = prepared_data.read_local_data('all', "data/prepared")
 ##########################################################################################
 # Create the app
 app = dash.Dash(__name__)
-server = app.server in src/app.py
+#server = app.server in src/app.py
 
 #########################################################################################
 ########## Header Section Divs: link, Banner, mytable:                              #####
@@ -107,9 +107,12 @@ def get_video_frame():
 
     if ret:
         # Convert frame to RGB format for encoding
+        frame = cv2.resize(frame, (300, 400))
+
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        # Encode frame as base64 string
         ret, buffer = cv2.imencode('.jpg', frame)
+        # Encode frame as base64 string
+
         encoded_image = base64.b64encode(buffer).decode('utf-8')
         return f'data:image/jpeg;base64,{encoded_image}'
     else:
@@ -118,7 +121,7 @@ def get_video_frame():
 
 
 # Update the video element to use the get_video_frame function
-meowmidwest_img = html.Iframe(src=get_video_frame(), style={'width': '400px', 'height': '500px'})
+meowmidwest_img = html.Iframe(src=get_video_frame(), style={'width': '800px', 'height': '500px'})
 
 meowmidwest_item = html.Div(
     [
@@ -668,7 +671,7 @@ def create_sum_table(summary):
         }
         columns.append(col_info)
 
-    print(columns)
+
 
     data = df.sort_values("total", ascending=False).to_dict("records")
     return DataTable(
@@ -1351,17 +1354,8 @@ def change_area_graphs(sum_cell, sum_data):
     return fig
 
 
-#   # num = row_data['index']
-#    print("active_cell", avg_cell,
-#    #       "\nrow_number", row_number,
-##    #       "\nrow_data", row_data,
-#       "\ntypes", types)
 
-# convert type to a number
-
-# fig =  prepared_data.create_dataframe_counts_specificGenH_fig( df,'Very good','diabetic',1)
-#   return fig
 
 #############################################
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=8054)
