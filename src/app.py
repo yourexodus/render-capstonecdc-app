@@ -1,6 +1,9 @@
-from flask import Flask
+import base64
 
-#app = Flask(__name__)
+from flask import Flask
+import cv2
+from dash import Dash, html, dcc
+# app = Flask(__name__)
 import dash
 
 from jupyter_dash import JupyterDash
@@ -10,7 +13,7 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash import html, dcc
 # 1. pip install Pillow 2. Import Image from Pillow
-#3. pip install pandas
+# 3. pip install pandas
 from PIL import Image
 
 from dash_table import DataTable
@@ -43,7 +46,9 @@ link = dbc.NavLink("View Github Repository", href="https://github.com/yourexodus
 #### ********************************  ######
 #############      BANNER ITEM   ############
 #### ********************************  ######
-banner_img = Image.open("../assets/banner2.PNG").convert('RGB')
+banner_img_path = "assets/banner2.PNG"
+banner_img = Image.open(banner_img_path).convert('RGB')
+
 banner_item = dbc.Row(
     [
         dbc.Col(
@@ -59,8 +64,8 @@ banner_item = dbc.Row(
 #########              mytable ITEMs:                  ##############
 #########      doctorcat_item and meowmidwest_item    ##############
 ######### ********************************  ########################
-
-doctorcat_img = Image.open("../assets/doctorcat.png")
+doctorcat_img_path = "assets/doctorcat.png"
+doctorcat_img = Image.open(doctorcat_img_path)
 
 doctorcat_item = html.Div(
     [
@@ -91,12 +96,33 @@ doctorcat_item = html.Div(
 )
 doctorcat_item.style = {'gridArea': "doctorcat_item"}
 
+
+def get_video_frame():
+    cap = cv2.VideoCapture('assets/MeowMidwest.mp4')
+    ret, frame = cap.read()
+    cap.release()  # Release the capture after reading a frame
+
+    if ret:
+        # Convert frame to RGB format for encoding
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # Encode frame as base64 string
+        ret, buffer = cv2.imencode('.jpg', frame)
+        encoded_image = base64.b64encode(buffer).decode('utf-8')
+        return f'data:image/jpeg;base64,{encoded_image}'
+    else:
+        print("Error: Unable to capture video frame")
+        return None  # Handle error gracefully (optional)
+
+
+# Update the video element to use the get_video_frame function
+meowmidwest_img = html.Iframe(src=get_video_frame(), style={'width': '400px', 'height': '500px'})
+
 meowmidwest_item = html.Div(
     [
         html.Div(
             html.Div(
                 [
-                    html.Div([html.Iframe(src="../assets/MeowMidwest.mp4", style={'width': '400px', 'height': '500px'})]),
+                    html.Div([meowmidwest_img]),
                     html.Div(className="sidebar-wrapper"),
                 ]
             ),
@@ -107,7 +133,8 @@ meowmidwest_item = html.Div(
                 html.Div(className="container-fluid"),
                 className="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ",
             ),
-            className="main-panel",
+            className="main-panel"  # ,  
+
         ),
     ]
 )
@@ -190,6 +217,7 @@ diff = [
     {'label': '5: BLANK Not asked or Missing', 'value': 5},
 
 ]
+
 
 #############################################################################
 ################## Layout Diff:  will hold the result of the prediction #####
@@ -283,13 +311,14 @@ raw_table = create_raw_table(raw)
 ################   BORDER ITEM  ###########################################
 ###########################################################################
 
-border_img = Image.open("../assets/border1.png").convert('RGB')
+border1_img_path = "assets/border1.png"
+border1_img = Image.open(border1_img_path)
 
 border1_item = dbc.Row(
     [
         dbc.Col(
             [
-                dbc.CardImg(src=border_img, style={'width': '100%'}),
+                dbc.CardImg(src=border1_img, style={'width': '100%'}),
                 # Add other components for sidebar and navbar here...
             ]
         )
@@ -347,8 +376,8 @@ treatment = [
 #############################################################
 ################     exploredata_item        #################
 ###############################################################
-
-exploredata_img = Image.open("../assets/exploredata.png")
+exploredata_img_path = "assets/exploredata.png"
+exploredata_img = Image.open(exploredata_img_path)
 exploredata_item = html.Div(
     [
         html.Div(
@@ -382,7 +411,9 @@ exploredata_item.style = {'gridArea': "exploredata_item"}
 ############################################################
 ################     heatmap_item       ######################
 ###############################################################
-heatmap_img = Image.open("../assets/heatmap.PNG")
+
+heatmap_img_path = "assets/heatmap.PNG"
+heatmap_img = Image.open(heatmap_img_path)
 heatmap_item = html.Div(
     [
         html.Div(
@@ -416,8 +447,8 @@ heatmap_item.style = {'gridArea': "heatmap_item"}
 ############################################################
 ################     boxplot_item       ######################
 ###############################################################
-
-boxplot_img = Image.open("../assets/boxplot.PNG")
+boxplot_img_path = "assets/boxplot.PNG"
+boxplot_img = Image.open(boxplot_img_path)
 boxplot_item = html.Div(
     [
         html.Div(
@@ -453,8 +484,8 @@ boxplot_item.style = {'gridArea': "boxplot_item"}
 ############################################################
 ################     outliers_item       ######################
 ###############################################################
-
-outliers_img = Image.open("../assets/outliers.png")
+outliers_img_path = "assets/outliers.png"
+outliers_img = Image.open(outliers_img_path)
 outliers_item = html.Div(
     [
         html.Div(
@@ -488,8 +519,8 @@ outliers_item.style = {'gridArea': "outliers_item"}
 ############################################################
 ################     updatecolumns_item       ################
 ###############################################################
-
-updatecolumns_img = Image.open("../assets/updateColumns.png")
+updateColumns_img_path = "assets/updateColumns.png"
+updateColumns_img = Image.open(updateColumns_img_path)
 
 updatecolumns_item = html.Div(
     [
@@ -498,7 +529,7 @@ updatecolumns_item = html.Div(
                 [
                     html.Div([
                         # html.Img(src=banner_img, style={'width': '100%', 'height': '50%'})
-                        html.Img(src=updatecolumns_img,
+                        html.Img(src=updateColumns_img,
                                  style={'width': '800px', 'height': '600px', 'justify-content': 'center',
                                         'align-items': 'center'})
                         # html.Img(src=banner_img, 'width': '50%', 'height': '200px'),               # using the pillow image variable
@@ -520,6 +551,7 @@ updatecolumns_item = html.Div(
 )
 
 updatecolumns_item.style = {'gridArea': "updatecolumns_item"}
+
 
 ##############################################################
 ################     updated table       ######################
@@ -590,6 +622,8 @@ def create_updated_table(df):
             }
         ],
     )
+
+
 df_prep = prepared_data.read_local_data('all', "data/prepared")
 updated_table = create_updated_table(df_prep)
 
@@ -610,6 +644,7 @@ summary = summary.reset_index()
 circle_fig = px.pie(summary, values='count', names='percentage', title='Distribution of Health by Type')  # No filtering
 
 graph_01 = dcc.Graph(figure=circle_fig, style={'gridArea': "graph_01"})
+
 
 ##############################################################
 ################     summary_table           ################
@@ -703,7 +738,8 @@ analysis_graph_figure = dcc.Graph(figure=analysis_graph, id="analysis_graph_figu
 ##################    PREDICTION MODELING SECTION #######################################
 #########################################################################################
 
-Model_img = Image.open("../assets/Model.png")
+Model_img_path = "assets/Model.png"
+Model_img = Image.open(Model_img_path)
 
 Model_item = html.Div(
     [
@@ -741,8 +777,8 @@ programlink = html.A('Python Program Making Prediction',
                      href="https://github.com/yourexodus/capstone_CDC/blob/4b4f4f3c0933f6968cb9b2651c8c35f3f5372d1f/Prediction_Menu.py")
 
 ##############################################
-predictionCode_img = Image.open("../assets/predictionCode.png")
-
+predictionCode_img_path = "assets/predictionCode.png"
+predictionCode_img = Image.open(predictionCode_img_path)
 predictionCode_item = html.Div(
     [
         html.Div(
@@ -772,12 +808,15 @@ predictionCode_item = html.Div(
 )
 predictionCode_item.style = {'gridArea': "predictionCode_item"}
 ##############################################################
+
+code_img = html.Iframe(src=get_video_frame(), style={'width': '400px', 'height': '500px'})
+
 code_item = html.Div(
     [
         html.Div(
             html.Div(
                 [
-                    html.Div([html.Iframe(src="../assets/code.mp4", style={'width': '400px', 'height': '500px'})]),
+                    html.Div([code_img]),
                     html.Div(className="sidebar-wrapper"),
                 ]
             ),
@@ -788,7 +827,8 @@ code_item = html.Div(
                 html.Div(className="container-fluid"),
                 className="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ",
             ),
-            className="main-panel",
+            className="main-panel", #  
+
         ),
     ]
 )
@@ -812,7 +852,9 @@ mytable2 = html.Table([data_row2])
 ##############         TESTING PROGRAM                    ##############################
 #########################################################################################
 
-flowchart_img = Image.open("../assets/flowchart.png")
+flowchart_img_path = "assets/flowchart.png"
+flowchart_img = Image.open(flowchart_img_path)
+
 flowchart_item = html.Div(
     [
         html.Div(
@@ -863,8 +905,7 @@ app.layout = html.Div([
     ################## Define input and out for income drop down ###########################################
     #######################################################################################################
 
-
-html.Div(
+    html.Div(
         children=[
             'Please choose your income range.:', dcc.Dropdown(
                 id='menu_income_id',
@@ -1284,7 +1325,7 @@ def callback_e(diff_value, menu_income_id, gen_health_id, phy_health_id, men_hea
 ####### Call back for graphs
 ########################################################################
 @app.callback(
-    Output( "analysis_graph_figure" , "figure" ) ,
+    Output("analysis_graph_figure", "figure"),
     Input('sum-table', 'active_cell'),
     State('sum-table', 'derived_virtual_data')
 )
@@ -1320,4 +1361,4 @@ def change_area_graphs(sum_cell, sum_data):
 
 #############################################
 if __name__ == '__main__':
-    app.run(debug=True,port=8054)
+    app.run(debug=True)
