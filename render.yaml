@@ -1,7 +1,7 @@
 services:
   # See https://render.com/docs/blueprint-spec for more info on render blueprints
   - type: web
-    name: mf_cdc_capstone8
+    name: mf_cdc_capstone9
     env: python
     plan: free
     # A requirements.txt file must exist
