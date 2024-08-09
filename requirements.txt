@@ -11,5 +11,6 @@ pandas==1.5.3
 Pillow==10.4.0
 plotly==5.23.0
 scikit_learn==1.5.1
+setuptools==58.2.0
 gunicorn
 dash-tools

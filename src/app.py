@@ -1,3 +1,6 @@
+import setuptools
+#setuptools.setup()
+
 import base64
 
 from flask import Flask
