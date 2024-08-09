@@ -2,7 +2,7 @@ dash==2.17.1
 dash_bootstrap_components==1.6.0
 dash_html_components==2.0.0
 dash_table==5.0.0
-Flask==2.2.3
+Flask==2.2.2
 jupyter_dash==0.4.2
 matplotlib==3.9.1.post1
 numpy==1.24.2
