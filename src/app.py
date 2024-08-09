@@ -34,7 +34,7 @@ df = prepared_data.read_local_data('all', "data/prepared")
 ##########################################################################################
 # Create the app
 app = dash.Dash(__name__)
-#server = app.server in src/app.py
+server = app.server in src/app.py
 
 #########################################################################################
 ########## Header Section Divs: link, Banner, mytable:                              #####
